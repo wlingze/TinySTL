@@ -18,5 +18,7 @@ message(STATUS "the cmake_cxx_flags ${CMAKE_CXX_FLAGS}")
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
 set(TEST test/cppunit/test_main.cpp)
+file(GLOB_RECURSE TEST_FILE "test/*.cpp")
+
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-add_executable(stltest ${TEST})
+add_executable(stltest ${TEST} ${TEST_FILE})

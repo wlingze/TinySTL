@@ -48,8 +48,6 @@ public:
 
 static test::__test_base *test_root = 0;
 
-test::__reporter_base *test::__test_base::reporter = 0;
-
 inline void test::__test_base::register_test(test::__test_base *__test) {
   __test->next = test_root;
   test_root = __test;
@@ -61,7 +59,7 @@ inline void test::__test_base::register_test(test::__test_base *__test) {
   typedef test::__test_base base;                                              \
   void __run() {                                                               \
     const char *__class_name = #X;                                             \
-    message("start\n");
+    message("Test\n");
 
 #define CPPUNIT_TEST_BODY(X)                                                   \
   {                                                                            \
@@ -87,6 +85,6 @@ inline void test::__test_base::register_test(test::__test_base *__test) {
     return;                                                                    \
   }
 
-#define CPPUNIT_TEST_REGISTRATION(X) static X local;
+#define CPPUNIT_TEST_REGISTRATION(X) static X static_##X;
 
 #endif //__CPPUNIT_CPPUNIT_MINI__
