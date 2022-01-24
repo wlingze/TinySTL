@@ -1,0 +1,48 @@
+
+#ifndef __TINYSTL_STL_MEMORY__
+#define __TINYSTL_STL_MEMORY__
+
+#include "stl_alloc.h"
+#include "stl_config.h"
+
+STL_BEGIN_NAMESPACE
+
+template <typename _T> class auto_ptr {
+private:
+  _T *_M_ptr;
+
+public:
+  auto_ptr(_T *__p = 0) : _M_ptr(__p) {}
+  template <typename _Tp1>
+  auto_ptr(auto_ptr<_Tp1> &__a) : _M_ptr(__a.release()) {}
+  ~auto_ptr() { delete _M_ptr; }
+
+  auto_ptr &operator=(auto_ptr &__a) {
+    if (&__a == 0) {
+      delete _M_ptr;
+      _M_ptr = __a.release();
+    }
+    return *this;
+  }
+
+  _T &operator*() const { return *_M_ptr; }
+  _T *operator->() const { return _M_ptr; }
+  _T *get() const { return _M_ptr; }
+
+  _T *release() {
+    _T *__tmp = _M_ptr;
+    _M_ptr = 0;
+    return __tmp;
+  }
+
+  void reset(_T *__p = 0) {
+    if (__p != _M_ptr) {
+      delete _M_ptr;
+      _M_ptr = __p;
+    }
+  }
+};
+
+STL_END_NAMESPACE
+
+#endif //__TINYSTL_STL_MEMORY__
