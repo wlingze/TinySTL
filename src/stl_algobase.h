@@ -90,21 +90,21 @@ _OutputIterator fill_n(_OutputIterator __first, _Size __n, const _Tp &__value) {
   return __first;
 }
 
-template <> void fill(char *__first, char *__last, const char &__value) {
+template <> void inline fill(char *__first, char *__last, const char &__value) {
   char __tmp = __value;
   memset(__first, __tmp, (__last - __first));
 }
 
 template <>
-void fill(unsigned char *__first, unsigned char *__last,
-          const unsigned char &__value) {
+inline void fill(unsigned char *__first, unsigned char *__last,
+                 const unsigned char &__value) {
   char __tmp = __value;
   memset(__first, __tmp, (__last - __first));
 }
 
 template <>
-void fill(signed char *__first, signed char *__last,
-          const signed char &__value) {
+inline void fill(signed char *__first, signed char *__last,
+                 const signed char &__value) {
   char __tmp = __value;
   memset(__first, __tmp, (__last - __first));
 }
