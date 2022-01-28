@@ -12,4 +12,8 @@ CPPUNIT_TEST_REGISTRATION(allocator_test)
 using test::memory_test;
 CPPUNIT_TEST_REGISTRATION(memory_test)
 
+#include "../type_traits_test.h"
+using test::type_trait_test;
+CPPUNIT_TEST_REGISTRATION(type_trait_test)
+
 #endif //__TEST_CPPUNIT_UNTIL__

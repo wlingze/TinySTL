@@ -85,6 +85,11 @@ inline void test::__test_base::register_test(test::__test_base *__test) {
     return;                                                                    \
   }
 
+#define CPPUNIT_CHECK(X)                                                       \
+  if (!(X)) {                                                                  \
+    test::__test_base::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__);         \
+  }
+
 #define CPPUNIT_TEST_REGISTRATION(X) static X static_##X;
 
 #endif //__CPPUNIT_CPPUNIT_MINI__
