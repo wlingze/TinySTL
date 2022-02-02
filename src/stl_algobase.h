@@ -4,7 +4,7 @@
 #include "stl_config.h"
 #include "stl_iterator_base.h"
 #include "type_traits.h"
-#include <string.h>
+#include <cstring>
 
 STL_BEGIN_NAMESPACE
 
@@ -49,8 +49,9 @@ _OutputIterator _copy_aux(_InputIterator __first, _InputIterator __last,
 }
 
 template <class _Tp>
-_Tp *_copy_aux(_Tp *__first, _Tp *__last, _Tp *__result, __true_type) {
-  memmove(__first, __result, sizeof(_Tp) * (__last - __first));
+_Tp *_copy_aux(const _Tp *__first, const _Tp *__last, _Tp *__result,
+               __true_type) {
+  memmove(__result, __first, sizeof(_Tp) * (__last - __first));
   return __result + (__last - __first);
 }
 

@@ -146,10 +146,10 @@ _ForwardIter __uninitialized_fill_n_aux(_ForwardIter __first, _Size __n,
   _ForwardIter __cur = __first;
   __STL_TRY {
     for (; __n > 0; --__n, ++__cur)
-      _Construct(&*__cur, __x);
+      _construct(&*__cur, __x);
     return __cur;
   }
-  __STL_UNWIND(_Destroy(__first, __cur));
+  __STL_UNWIND(destory(__first, __cur));
 }
 
 template <class _ForwardIter, class _Size, class _Tp, class _Tp1>
