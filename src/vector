@@ -1,0 +1,6 @@
+#ifndef __TINYSTL_VECTOR__
+#define __TINYSTL_VECTOR__
+
+#include "stl_vector.h"
+
+#endif //__TINYSTL_VECTOR__

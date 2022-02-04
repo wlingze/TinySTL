@@ -146,8 +146,7 @@ typename iterator_traits<_Iter>::value_type *value_type(const _Iter &__i) {
 
 template <class _InputIterator>
 typename iterator_traits<_InputIterator>::difference_type
-__distance(_InputIterator &__first, _InputIterator &__last,
-           input_iterator_tag) {
+__distance(_InputIterator __first, _InputIterator __last, input_iterator_tag) {
   typename iterator_traits<_InputIterator>::difference_type __n = 0;
   while (__first != __last) {
     __first++;
@@ -158,16 +157,15 @@ __distance(_InputIterator &__first, _InputIterator &__last,
 
 template <class _RandomAccessIterator>
 typename iterator_traits<_RandomAccessIterator>::difference_type
-__distance(_RandomAccessIterator &__first, _RandomAccessIterator &__last,
+__distance(_RandomAccessIterator __first, _RandomAccessIterator __last,
            random_access_iterator_tag) {
   return __last - __first;
 }
 
 template <class _InputIterator>
 typename iterator_traits<_InputIterator>::difference_type
-distance(_InputIterator &__first, _InputIterator &__last) {
-  typename iterator_traits<_InputIterator>::iterator_category _Category;
-  __distance(__first, __last, _Category());
+distance(_InputIterator __first, _InputIterator __last) {
+  return __distance(__first, __last, iterator_category(__first));
 }
 
 template <class _InputIterator, class _Distance = typename iterator_traits<
@@ -203,7 +201,7 @@ template <class _InputIterator, class _Distance = typename iterator_traits<
                                     _InputIterator>::difference_type>
 void advance(_InputIterator &__i, _Distance __n) {
   typename iterator_traits<_InputIterator>::iterator_category _Category;
-  __advance(__i, __n, _Category());
+  __advance(__i, __n, iterator_category(__i));
 }
 
 STL_END_NAMESPACE

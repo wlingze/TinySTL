@@ -106,38 +106,38 @@ public:
 
 /* cmp */
 template <class _Iterator>
-inline bool operator==(reverse_iterator<_Iterator> &__x,
-                       reverse_iterator<_Iterator> &__y) {
+inline bool operator==(const reverse_iterator<_Iterator> &__x,
+                       const reverse_iterator<_Iterator> &__y) {
   return __x.base() == __y.base();
 }
 
 template <class _Iterator>
-inline bool operator<(reverse_iterator<_Iterator> &__x,
-                      reverse_iterator<_Iterator> &__y) {
+inline bool operator<(const reverse_iterator<_Iterator> &__x,
+                      const reverse_iterator<_Iterator> &__y) {
   return __x.base() < __y.base();
 }
 
 template <class _Iterator>
-inline bool operator>(reverse_iterator<_Iterator> &__x,
-                      reverse_iterator<_Iterator> &__y) {
+inline bool operator>(const reverse_iterator<_Iterator> &__x,
+                      const reverse_iterator<_Iterator> &__y) {
   return __y < __x;
 }
 
 template <class _Iterator>
-inline bool operator!=(reverse_iterator<_Iterator> &__x,
-                       reverse_iterator<_Iterator> &__y) {
+inline bool operator!=(const reverse_iterator<_Iterator> &__x,
+                       const reverse_iterator<_Iterator> &__y) {
   return !(__x == __y);
 }
 
 template <class _Iterator>
-inline bool operator>=(reverse_iterator<_Iterator> &__x,
-                       reverse_iterator<_Iterator> &__y) {
+inline bool operator>=(const reverse_iterator<_Iterator> &__x,
+                       const reverse_iterator<_Iterator> &__y) {
   return !(__x < __y);
 }
 
 template <class _Iterator>
-inline bool operator<=(reverse_iterator<_Iterator> &__x,
-                       reverse_iterator<_Iterator> &__y) {
+inline bool operator<=(const reverse_iterator<_Iterator> &__x,
+                       const reverse_iterator<_Iterator> &__y) {
   return !(__x > __y);
 }
 

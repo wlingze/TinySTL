@@ -4,9 +4,20 @@
 #include "stl_config.h"
 #include "stl_iterator_base.h"
 #include "type_traits.h"
+#include <cstdio>
 #include <cstring>
+#include <type_traits>
 
 STL_BEGIN_NAMESPACE
+
+/*
+  max
+  min
+*/
+
+template <class _Tp> bool max(const _Tp &__a, const _Tp &__b) {
+  return __a < __b ? __b : __a;
+}
 
 /* copy
 
@@ -128,6 +139,55 @@ signed char *fill_n(signed char *__first, _Size __n,
                     const signed char &__value) {
   fill(__first, __first + __n, __value);
   return __first + __n;
+}
+
+/* swap */
+template <class _Tp> void swap(_Tp &__a, _Tp &__b) {
+  _Tp tmp = __a;
+  __a = __b;
+  __b = tmp;
+}
+
+/*
+  equal
+    equal(first, last, other):  [first, last) == [other, other+last-first)
+    equal(first, last, other, binary_pred):  binary_pred([first, last) ,[other,
+  other+last-first))
+*/
+template <class _InputIter1, class _InputIter2>
+bool equal(_InputIter1 __first, _InputIter1 __last, _InputIter2 __first2) {
+  for (; __first != __last; __first++, __last++) {
+    if (*__first != *__first2)
+      return false;
+  }
+  return true;
+}
+
+template <class _InputIter1, class _InputIter2, class _Binary_pred>
+bool equal(_InputIter1 __first, _InputIter1 __last, _InputIter2 __first2,
+           _Binary_pred _binary_pred) {
+  for (; __first != __last; __first++, __last++) {
+    if (!_binary_pred(__first, __first2))
+      return false;
+  }
+  return true;
+}
+
+/*
+lexicographical_compare
+*/
+template <class _InputIter1, class _InputIter2>
+bool lexicographical_compare(_InputIter1 __first1, _InputIter1 __last1,
+                             _InputIter2 __first2, _InputIter2 __last2) {
+  for (; __first1 != __last1 && __first2 != __last2; __first1++, __first2++) {
+    if (*__first1 < *__first2) {
+      return true;
+    }
+    if (*__first2 < *__first1) {
+      return false;
+    }
+  }
+  return __first1 == __last1 && __first2 != __last2;
 }
 
 STL_END_NAMESPACE
