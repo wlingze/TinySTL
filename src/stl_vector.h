@@ -255,6 +255,13 @@ public:
     return __p;
   }
 
+  void resize(size_type __new_size, const_reference __v = value_type()) {
+    if (__new_size > size()) {
+      erase(begin() + __new_size, end());
+    } else {
+      insert(end(), size() - __new_size, __v);
+    }
+  }
   void clear() { erase(begin(), end()); }
 
 private:
