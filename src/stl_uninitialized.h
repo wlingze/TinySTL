@@ -31,7 +31,7 @@ _uninitialized_copy_aux(_InputIterator __first, _InputIterator __last,
   _ForwardIterator __cur = __result;
   __STL_TRY {
     for (; __first != __last; __cur++, __first++) {
-      construct(__cur, __first);
+      construct(&*__cur, *__first);
     }
     return __cur;
   }
@@ -67,7 +67,7 @@ _ForwardIterator _uninitialized_copy_n(_InputIterator __first, _Size __n,
   _ForwardIterator __cur = __result;
   __STL_TRY {
     for (; __n > 0; __cur++, __first++, __n--) {
-      construct(__cur, __first);
+      construct(&*__cur, *__first);
     }
     return __cur;
   }

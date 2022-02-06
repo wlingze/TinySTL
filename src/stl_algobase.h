@@ -156,7 +156,7 @@ template <class _Tp> void swap(_Tp &__a, _Tp &__b) {
 */
 template <class _InputIter1, class _InputIter2>
 bool equal(_InputIter1 __first, _InputIter1 __last, _InputIter2 __first2) {
-  for (; __first != __last; __first++, __last++) {
+  for (; __first != __last; __first++, __first2++) {
     if (*__first != *__first2)
       return false;
   }
@@ -166,7 +166,7 @@ bool equal(_InputIter1 __first, _InputIter1 __last, _InputIter2 __first2) {
 template <class _InputIter1, class _InputIter2, class _Binary_pred>
 bool equal(_InputIter1 __first, _InputIter1 __last, _InputIter2 __first2,
            _Binary_pred _binary_pred) {
-  for (; __first != __last; __first++, __last++) {
+  for (; __first != __last; __first++, __first2++) {
     if (!_binary_pred(__first, __first2))
       return false;
   }

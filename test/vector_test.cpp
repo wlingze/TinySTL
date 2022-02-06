@@ -301,10 +301,10 @@ void test::vector_test::auto_ref() {
   v_v_int.push_back(v_v_int[0]);
   v_v_int.push_back(ref);
 
-  // vector<vector<int>>::iterator vvit(v_v_int.begin()),
-  // vvitEnd(v_v_int.end()); for (; vvit != vvitEnd; ++vvit) {
-  //   CPPUNIT_ASSERT(*vvit == ref);
-  // }
+  vector<vector<int>>::iterator vvit(v_v_int.begin()), vvitEnd(v_v_int.end());
+  for (; vvit != vvitEnd; ++vvit) {
+    CPPUNIT_ASSERT(*vvit == ref);
+  }
 }
 
 // void test::vector_test::allocator_with_state() {
