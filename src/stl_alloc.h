@@ -397,6 +397,109 @@ inline bool operator==(const debug_alloc<_Alloc> &,
   return true;
 }
 
+/*
+allocator adaptor
+*/
+
+// all
+template <class _Tp, class _Allocator> struct _Alloc_traits {
+  static const bool _S_instanceless = false;
+  typedef typename _Allocator::template rebind<_Tp>::other allocator_type;
+};
+
+// allocator
+template <class _Tp, class _Tp1> struct _Alloc_traits<_Tp, allocator<_Tp1>> {
+  static const bool _S_instanceless = false;
+  typedef simple_alloc<_Tp, allocator<_Tp1>> _Alloc_type;
+  typedef allocator<_Tp1> allocator_type;
+};
+
+// __malloc_alloc_template
+template <class _Tp, int __inst>
+struct _Alloc_traits<_Tp, __malloc_alloc_template<__inst>> {
+  static const bool _S_instanceless = false;
+  typedef simple_alloc<_Tp, __malloc_alloc_template<__inst>> _Alloc_type;
+  typedef allocator<_Tp, __malloc_alloc_template<__inst>> allocator_type;
+};
+
+// __default_alloc_template
+template <class _Tp, bool __threads, int __inst>
+struct _Alloc_traits<_Tp, __default_alloc_template<__threads, __inst>> {
+  static const bool _S_instanceless = false;
+  typedef simple_alloc<_Tp, __default_alloc_template<__threads, __inst>>
+      _Alloc_type;
+  typedef allocator<_Tp, __default_alloc_template<__threads, __inst>>
+      allocator_type;
+};
+
+// debug_alloc
+template <class _Tp, class _Alloc>
+struct _Alloc_traits<_Tp, debug_alloc<_Alloc>> {
+  static const bool _S_instanceless = false;
+  typedef simple_alloc<_Tp, debug_alloc<_Alloc>> _Alloc_type;
+  typedef allocator<_Tp, debug_alloc<_Alloc>> allocator_type;
+};
+
+// allocator(__malloc_alloc_template)
+template <class _Tp, class _Tp1, int __inst>
+struct _Alloc_traits<_Tp, allocator<_Tp1, __malloc_alloc_template<__inst>>> {
+  static const bool _S_instanceless = true;
+  typedef simple_alloc<_Tp, __malloc_alloc_template<__inst>> _Alloc_type;
+  typedef allocator<_Tp, __malloc_alloc_template<__inst>> allocator_type;
+};
+
+// allocator(__default_alloc_template)
+template <class _Tp, class _Tp1, bool __thr, int __inst>
+struct _Alloc_traits<_Tp,
+                     allocator<_Tp1, __default_alloc_template<__thr, __inst>>> {
+  static const bool _S_instanceless = true;
+  typedef simple_alloc<_Tp, __default_alloc_template<__thr, __inst>>
+      _Alloc_type;
+  typedef allocator<_Tp, __default_alloc_template<__thr, __inst>>
+      allocator_type;
+};
+
+// allocator(debug_alloc)
+template <class _Tp, class _Tp1, class _Alloc>
+struct _Alloc_traits<_Tp, allocator<_Tp1, debug_alloc<_Alloc>>> {
+  static const bool _S_instanceless = true;
+  typedef simple_alloc<_Tp, debug_alloc<_Alloc>> _Alloc_type;
+  typedef allocator<_Tp, debug_alloc<_Alloc>> allocator_type;
+};
+
+// to container
+
+template <class _Tp, class _Alloc, bool _isStatic> class _alloc_base_aux {
+public:
+  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  allocator_type get_allocator() const { return _M_data_allocator; }
+
+  _alloc_base_aux(const allocator_type &__a) : _M_data_allocator(__a) {}
+
+  allocator_type _M_data_allocator;
+
+  _Tp *_M_allocate(size_t __n) { return _M_data_allocator.allocate(__n); }
+  void _M_deallocate(_Tp *__p, size_t __n) {
+    if (__p)
+      _M_data_allocator.deallocate(__p, __n);
+  }
+};
+
+template <class _Tp, class _Alloc> class _alloc_base_aux<_Tp, _Alloc, true> {
+
+public:
+  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  typedef typename _Alloc_traits<_Tp, _Alloc>::_Alloc_type _Alloc_type;
+  allocator_type get_allocator() const { return allocator_type(); }
+  _alloc_base_aux(const allocator_type &__a) {}
+
+  _Tp *_M_allocate(size_t __n) { return _Alloc_type::allocate(__n); }
+  void _M_deallocate(_Tp *__p, size_t __n) {
+    if (__p)
+      _Alloc_type::deallocate(__p, __n);
+  }
+};
+
 STL_END_NAMESPACE
 
 #endif // __TINYSTL_STL_ALLOC__

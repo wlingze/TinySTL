@@ -2,6 +2,7 @@
 #define __TINYSTL_STL_CONSTRUCT__
 
 #include "stl_config.h"
+#include "stl_iterator_base.h"
 #include "type_traits.h"
 
 STL_BEGIN_NAMESPACE

@@ -16,4 +16,8 @@ CPPUNIT_TEST_REGISTRATION(memory_test)
 using test::type_trait_test;
 CPPUNIT_TEST_REGISTRATION(type_trait_test)
 
+#include "../vector_test.h"
+using test::vector_test;
+CPPUNIT_TEST_REGISTRATION(vector_test)
+
 #endif //__TEST_CPPUNIT_UNTIL__
