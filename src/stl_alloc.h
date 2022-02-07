@@ -101,10 +101,10 @@ typedef __malloc_alloc_template<0> malloc_alloc;
 // simple wrapper _Alloc
 template <class _Tp, class _Alloc> class simple_alloc {
 public:
-  static void *allocate(size_t __n) {
-    return __n ? 0 : (_Tp *)_Alloc::allocate(__n * sizeof(_Tp));
+  static _Tp *allocate(size_t __n) {
+    return __n ? (_Tp *)_Alloc::allocate(__n * sizeof(_Tp)) : 0;
   }
-  static void *allocate(void) { return (_Tp *)_Alloc::allocate(sizeof(_Tp)); }
+  static _Tp *allocate(void) { return (_Tp *)_Alloc::allocate(sizeof(_Tp)); }
 
   static void deallocate(_Tp *__p, size_t __n) {
     if (__n != 0)
@@ -120,9 +120,9 @@ private:
 
 public:
   static void *allocate(size_t __n) {
-    char *__result = _Alloc::allocate(__n + (int)_S_extra);
+    char *__result = (char *)(_Alloc::allocate(__n + (int)_S_extra));
     *(size_t *)__result = __n;
-    return __result + (int)_S_extra;
+    return (void *)(__result + (int)_S_extra);
   }
 
   static void deallocate(void *__p, size_t __n) {
@@ -244,12 +244,12 @@ __default_alloc_template<__threads, __inst>::_S_chunk_alloc(size_t __size,
     __nobjs = (int)__bytes_left / __size;
     __total_bytes = __size * __nobjs;
     __ret = _S_start_free;
-    _S_start_free = _S_end_free + __total_bytes;
+    _S_start_free += __total_bytes;
     return __ret;
   }
 
   // left memory to free_list
-  if (__bytes_left > 0) {
+  if ((int)__bytes_left > 0) {
     _Obj **__my_free_list = _S_free_list + _S_free_list_index(__bytes_left);
     _Obj *__ptr = (_Obj *)_S_start_free;
     __ptr->_M_free_list_link = *__my_free_list;
@@ -275,6 +275,8 @@ __default_alloc_template<__threads, __inst>::_S_chunk_alloc(size_t __size,
     // throw bad alloc
     malloc_alloc::alloc(__size);
   }
+  _S_end_free = _S_start_free + __bytes_to_get;
+  _S_heap_size += __bytes_to_get;
   return _S_chunk_alloc(__size, __nobjs);
 }
 
@@ -399,6 +401,18 @@ inline bool operator==(const debug_alloc<_Alloc> &,
 
 /*
 allocator adaptor
+  _Alloc_traits{
+
+    bool _S_instanceless
+      false:
+        need instance
+        typedef : allocator_type
+          allocactor_type().allocate(size)
+      true:
+        dont nedd intsance
+        typedef : _Alloc_type
+          _Alloc_type::allocate(size)
+  }
 */
 
 // all
@@ -409,15 +423,15 @@ template <class _Tp, class _Allocator> struct _Alloc_traits {
 
 // allocator
 template <class _Tp, class _Tp1> struct _Alloc_traits<_Tp, allocator<_Tp1>> {
-  static const bool _S_instanceless = false;
-  typedef simple_alloc<_Tp, allocator<_Tp1>> _Alloc_type;
+  static const bool _S_instanceless = true;
+  typedef simple_alloc<_Tp, alloc> _Alloc_type;
   typedef allocator<_Tp1> allocator_type;
 };
 
 // __malloc_alloc_template
 template <class _Tp, int __inst>
 struct _Alloc_traits<_Tp, __malloc_alloc_template<__inst>> {
-  static const bool _S_instanceless = false;
+  static const bool _S_instanceless = true;
   typedef simple_alloc<_Tp, __malloc_alloc_template<__inst>> _Alloc_type;
   typedef allocator<_Tp, __malloc_alloc_template<__inst>> allocator_type;
 };
@@ -425,7 +439,7 @@ struct _Alloc_traits<_Tp, __malloc_alloc_template<__inst>> {
 // __default_alloc_template
 template <class _Tp, bool __threads, int __inst>
 struct _Alloc_traits<_Tp, __default_alloc_template<__threads, __inst>> {
-  static const bool _S_instanceless = false;
+  static const bool _S_instanceless = true;
   typedef simple_alloc<_Tp, __default_alloc_template<__threads, __inst>>
       _Alloc_type;
   typedef allocator<_Tp, __default_alloc_template<__threads, __inst>>
@@ -435,7 +449,7 @@ struct _Alloc_traits<_Tp, __default_alloc_template<__threads, __inst>> {
 // debug_alloc
 template <class _Tp, class _Alloc>
 struct _Alloc_traits<_Tp, debug_alloc<_Alloc>> {
-  static const bool _S_instanceless = false;
+  static const bool _S_instanceless = true;
   typedef simple_alloc<_Tp, debug_alloc<_Alloc>> _Alloc_type;
   typedef allocator<_Tp, debug_alloc<_Alloc>> allocator_type;
 };
